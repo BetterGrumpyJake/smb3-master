@@ -4903,10 +4903,11 @@ PRG004_B79D:
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+	;j
 	.word GiantPiranha_HideInPipe	; 0: Retracted in pipe
-	.word GiantPiranha_Emerge	; 1: Emerging
+	.word GiantPiranha_Chomp	; 1: Emerging
 	.word GiantPiranha_Chomp	; 2: Chomp
-	.word GiantPiranha_Retract	; 3: Retract
+	.word GiantPiranha_Chomp	; 3: Retract
 
 GiantPiranha_Emerge:
 
