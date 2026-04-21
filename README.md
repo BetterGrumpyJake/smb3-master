@@ -1,14 +1,25 @@
-# smb3
-Disassembly of Super Mario Bros 3
+ObjNorm_BusterBeatle:
+	CMP #TILEA_BRICK
+	
+PRG002_A5AE:
+	LDA #OBJSTATE_KICKED
+	STA Objects_State,X
+	; jump to our routine to decide what to throw
+	JSR BusterCheck
+	NOP
+	NOP
+	
+BusterCheck:
+    LDY <SlotIndexBackup    ; get busters slot index
+    LDA Objects_Var5,Y      ; get the y variable we stored earlier
+    CMP #$02                ; if it equals 2, then:
+    BEQ BusterShell   ; branch to throwing koopa routine
 
-Specifically for use with NESASM (https://github.com/camsaul/nesasm), this will reassemble into a byte-for-byte perfect clone of Super Mario Bros. 3 US (PRG1)
+    LDA #OBJ_ICEBLOCK       ; otherwise use ice brick, (could change this to anything?)
+    STA Level_ObjectID,X     ; store ice brick here
+    RTS
 
-NOTE: Included are support files for my "NoDice" level editor (game.xml and "icons" subdirectory) and "MusConv" (musconv.xml) utilities. They are not part of the actual source code required to build the ROM, but are necessary if you intend to use these tools.
-
--------------
-
-To assemble, simply run:
-
-nesasm smb3.asm
-
-Intended for use for research into the inner workings of SMB3 and highly technical ROM hacks (such as Super Mario Bros. 3Mix)
+BusterShell:
+    LDA #OBJ_GREENTROOPA    ; loads green koopa and stores it (could change this to anything?)
+    STA Level_ObjectID,X
+    RTS
