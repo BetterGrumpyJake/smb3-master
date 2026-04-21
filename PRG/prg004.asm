@@ -4862,7 +4862,7 @@ PRG004_B75A:
 	RTS		 ; Return
 
 GiantPiranha_TimerReloads:
-	.byte $30, $30, $30, $30
+	.byte $01, $FF, $FF, $FF
 
 ObjNorm_BigPiranha:
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
