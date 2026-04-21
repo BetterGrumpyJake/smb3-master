@@ -8,6 +8,11 @@ PRG002_A5AE:
 	JSR BusterCheck
 	NOP
 	NOP
+
+PRG002_A587:
+	JSR BusterProxCheck
+	BCS PRG002_A5A1
+	NOP
 	
 BusterCheck:
     LDY <SlotIndexBackup    ; get busters slot index
@@ -23,3 +28,15 @@ BusterShell:
     LDA #OBJ_GREENTROOPA    ; loads green koopa and stores it (could change this to anything?)
     STA Level_ObjectID,X
     RTS
+	
+BusterProxCheck:
+	LDY <SlotIndexBackup
+	LDA Objects_Var5,Y
+	CMP #$02
+	BEQ BusterThrowNow
+	LDA <Temp_Var15
+	CMP #$0c
+	RTS
+BusterThrowNow:
+	CLC
+	RTS
