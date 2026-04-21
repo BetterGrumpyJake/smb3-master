@@ -4862,6 +4862,7 @@ PRG004_B75A:
 	RTS		 ; Return
 
 GiantPiranha_TimerReloads:
+	;j
 	.byte $01, $FF, $FF, $FF
 
 ObjNorm_BigPiranha:
