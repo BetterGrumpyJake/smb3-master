@@ -1347,7 +1347,10 @@ PRG000_C713:
 
 	PHA		 ; Save tile
 
-	LDA Level_TilesetIdx
+	;j
+	;LDA Level_TilesetIdx
+	JSR PswitchCheck_30
+	
 	CMP #$02
 	BNE PRG000_C736	 ; If Level_TilesetIdx <> 2 (not a Hills style level), jump to PRG000_C736
 

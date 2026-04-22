@@ -1,14 +1,37 @@
-# smb3
-Disassembly of Super Mario Bros 3
+PRG000_C713:
+	;LDA Level_TilesetIdx
+	JSR PswitchCheck_30
+	
+prg30 end of bank
+PswitchCheck_30:
+	;if it's not a p switch carry on with the quicksand check
+	CMP #TILEA_PSWITCH
+	BNE PswitchCheckNo
+	;stores #CHNGTILE_PSWITCHSTOMP into Level_ChgTileEvent and gets the coords of the tile to change it to pressed switch
+	LDA #CHNGTILE_PSWITCHSTOMP
+	STA Level_ChgTileEvent
+	LDA ObjTile_DetYHi
+	STA Level_BlockChgYHi
+	LDA ObjTile_DetYLo
+	STA Level_BlockChgYLo
+	LDA ObjTile_DetXHi
+	STA Level_BlockChgXHi
+	LDA ObjTile_DetXLo
+	AND #$F0
+	STA Level_BlockChgXLo
 
-Specifically for use with NESASM (https://github.com/camsaul/nesasm), this will reassemble into a byte-for-byte perfect clone of Super Mario Bros. 3 US (PRG1)
+	;set the normal p switch timer countdown and music
+	LDA #$80
+	STA Level_PSwitchCnt
+	JSR PswitchSound
+PswitchCheckNo:
+	;load this back into A for quicksand and continue on
+	LDA Level_TilesetIdx
+	RTS
 
-NOTE: Included are support files for my "NoDice" level editor (game.xml and "icons" subdirectory) and "MusConv" (musconv.xml) utilities. They are not part of the actual source code required to build the ROM, but are necessary if you intend to use these tools.
-
--------------
-
-To assemble, simply run:
-
-nesasm smb3.asm
-
-Intended for use for research into the inner workings of SMB3 and highly technical ROM hacks (such as Super Mario Bros. 3Mix)
+PswitchSound:
+	LDA #SND_LEVELBABOOM
+	STA Sound_QLevel1
+	LDA #MUS2B_PSWITCH
+	STA Sound_QMusic2
+	RTS
