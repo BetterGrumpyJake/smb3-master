@@ -6406,8 +6406,12 @@ PRG008_BD98:
 
 	; Kuribo-on-muncher handling
 PRG008_BDA4:
-	LDA Player_Kuribo
-	BEQ PRG008_BDAE	 ; If Player does NOT have Kuribo's shoe, jump to PRG008_BDAE (get hurt!)
+	;j
+	;LDA Player_Kuribo
+	;BEQ PRG008_BDAE	 ; If Player does NOT have Kuribo's shoe, jump to PRG008_BDAE (get hurt!)
+	JMP Player_GetHurt	 ; Get hurt!
+	NOP
+	NOP
 
 	LDA Player_HitCeiling
 	BEQ PRG008_BDB4	 ; If Player has not just hit off ceiling, jump to PRG008_BDB4
