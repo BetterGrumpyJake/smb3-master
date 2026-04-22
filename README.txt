@@ -17,3 +17,9 @@ VineCheck:
 	JMP PRG001_AC80
 VineNotSolid:
 	JMP PRG001_AC86
+	
+Bounce_TileReplacements:
+	.byte CHNGTILE_DELETETOBG
+	
+prg8
+LATR_QBlocks:	.byte $20, $20, $20, $20, $20, $20, $20, $30, $20, $20, $20, $20, $20, $60, $20, $70, $20
