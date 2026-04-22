@@ -5706,7 +5706,8 @@ PRG000_DA32:
 	STA <Temp_Var1	 ; Temp_Var1 = 0
 
 	JSR Player_LoseKuribo	 ; Setup effect of Kuribo's shoe "flying off"
-	JMP PRG000_DA47	 ; Jump to PRG000_DA47
+	;j
+	JMP PRG000_DA7A
 
 PRG000_DA44:
 	STA Player_QueueSuit	 ; Queue power-up change
