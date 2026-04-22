@@ -5938,4 +5938,35 @@ PRG030_9FAF:
 	JMP IntIRQ_32PixelPartition_Part3
 
 ; NOTE: The remaining ROM space was all blank ($FF)
-
+SpawnShell_PlayerUpdate_30:
+    JSR SpawnShell_30
+    JSR Player_Update
+    RTS
+SpawnShell_30:
+    BIT <Pad_Input
+    BVC SpawnShellNo
+    LDA Player_ISHolding_OLD
+    BNE SpawnShellNo
+    JSR Level_IceBlock_GrabNew
+    CPX #$FF
+    BEQ SpawnShellNo
+    LDA #OBJ_GREENTROOPA
+    STA Level_ObjectID,X
+    LDA #$10
+    STA Objects_Timer2,X
+SpawnShellNo:
+    RTS
+	
+ShellPoof_30:
+    LDA Objects_State,X
+    CMP #OBJSTATE_KICKED
+    BNE ShellPoofSkip
+    LDA #OBJSTATE_POOFDEATH
+    STA Objects_State,X
+    LDA #$1F
+    STA Objects_Timer,X
+    RTS
+ShellPoofSkip:
+    LDA #OBJSTATE_SHELLED
+    STA Objects_State,X
+    RTS

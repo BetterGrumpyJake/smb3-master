@@ -342,7 +342,8 @@ PRG008_A17F:
 	SUB #$90
 	STA Counter_Wiggly
 
-	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
+	;j
+	JSR SpawnShell_PlayerUpdate_30	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
 	; If Player is...
 	LDA <Player_IsDying	; ... dying ....
@@ -2344,7 +2345,7 @@ PRG008_AB5B:
 	JMP PRG008_AB83	 ; Jump to PRG008_AB83
 
 PRG008_AB62:
-	LDY #Pad_Input
+	LDY #PLAYER_TOPWALKSPEED
 
 	BIT <Pad_Holding
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
@@ -2386,8 +2387,11 @@ PRG008_AB83:
 	ASL A
 	ASL A
 	ASL A
-	ADD #$40
-	TAY		 ; Y = ((selected top speed - 1) << 3) + $40 ??
+	ADD #$40	
+	; Y = 40 if slippery
+	; Y = 46 if very slippery
+	; Y = ((Player_Slippery - 1) << 3) + $40
+	TAY
 	BNE PRG008_AB9E	 ; And as long as that's not zero, jump to PRG008_AB9E
 
 PRG008_AB98:

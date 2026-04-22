@@ -2175,7 +2175,7 @@ PRG000_CB10:
 
 	LDA <Player_HaltGame	 
 	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
- 
+
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
  
@@ -2814,7 +2814,12 @@ ObjState_Held:
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98 (just draw held object) 
 
 PRG000_CE28:
-	JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
+	;j
+	;held shells don't wake up
+	;JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
+	NOP
+	NOP
+	NOP
 	BIT <Pad_Holding 
 	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
 
@@ -4030,7 +4035,10 @@ PRG000_D323:
 Object_SetShellState:
 	; Set Objects_State to Shelled
 	LDA #OBJSTATE_SHELLED
-	STA Objects_State,X
+	;j
+	;poof bopped shell
+	;STA Objects_State,X
+	JSR ShellPoof_30
 
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
@@ -4052,10 +4060,14 @@ Object_HoldKickOrHurtPlayer:
 
 PRG000_D343:
 	LDA Player_ISHolding_OLD
-	BNE PRG000_D39F	 ; If Player WAS holding something, jump to PRG000_D39F (RTS)
+	;j
+	;bump shells while holding shell
+	;BNE PRG000_D39F	 ; If Player WAS holding something, jump to PRG000_D39F (RTS)
+	BNE BumpShell
 
 	BIT <Pad_Holding
 	BVS PRG000_D34F	 	; If Player is holding B, jump to PRG000_D34F
+BumpShell:
 	JMP Player_KickObject	 ; Kick away the object and don't come back!
 
 PRG000_D34F:
@@ -6095,9 +6107,12 @@ Obj2Obj_EnByState:
 	.byte $01	; State 0: Dead/Empty
 	.byte $01	; State 1: Initializing
 	.byte $00	; State 2: Normal
-	.byte $00	; State 3: Shelled
-	.byte $00	; State 4: Held
-	.byte $00	; State 5: Kicked
+	.byte $00	; State 3: Shelled, 00 for held shells kill sitting shells, 01 for held shells don't kill sitting shells
+	;j
+	;.byte $00	; State 4: Held
+	.byte $01	; State 4: Held
+	;.byte $00	; State 5: Kicked
+	.byte $01	; State 5: Kicked
 	.byte $01	; State 6: Killed
 	.byte $01	; State 7: Squashed
 	.byte $01	; State 8: Dying
