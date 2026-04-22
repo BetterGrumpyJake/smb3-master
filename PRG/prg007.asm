@@ -476,8 +476,9 @@ Gameplay_UpdateAndDrawMisc:
 	JSR PlayerProjs_UpdateAndDraw	 ; Update and draw Player's weapon projectiles
 
 	LDA <Player_Suit
-	CMP #PLAYERSUIT_HAMMER
-	BEQ PRG007_A251	 ; If Player is wearing a Hammer Suit, jump to PRG007_A251
+	;springldc
+	CMP #PLAYERSUIT_ICE
+	BEQ PRG007_A251	 ; If Player is wearing a Ice Suit, jump to PRG007_A251
 
 	CMP #PLAYERSUIT_FIRE
 	BNE PRG007_A268	 ; If Player is not Fire, jump to PRG007_A268
@@ -574,6 +575,7 @@ PRG007_A2BA:
 
 	; Set projectile X
 	LDA <Player_X
+	;springldc how far from mario does the projectile spawn
 	ADD #$04
 	STA PlayerProj_X,X
 
@@ -586,8 +588,9 @@ PRG007_A2BA:
 	LDA #$01	 ; A = 1
 
 	LDY <Player_Suit
-	CPY #PLAYERSUIT_HAMMER
-	SEC		 ; Set carry (if NOT wearing the hammer suit)
+	;springldc
+	CPY #PLAYERSUIT_ICE
+	SEC		 ; Set carry (if NOT wearing the ice suit)
 	BNE PRG007_A2E3	 ; If Player is NOT wearing the Hammer Suit, jump to PRG007_A2E3
 	ASL A		 ; Clears carry, also A = 2
 PRG007_A2E3:
@@ -596,7 +599,11 @@ PRG007_A2E3:
 	; Set Player Projectile Y velocity
 	LDA #$03	 ; A = $03 (Fireballs are thrown down)
 	BCS PRG007_A2EC	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A2EC
-	LDA #-$03	 ; A = -$03 (Hammers are thrown up)
+	
+	;springldc hammer y velocity negative=up positive=down zero=flat
+	;LDA #-$03	 ; A = -$03 (Hammers are thrown up)
+	LDA #$01	 ; A = -$03 (Hammers are thrown up)
+	
 PRG007_A2EC:
 	STA PlayerProj_YVel,X
 
@@ -608,17 +615,23 @@ PRG007_A2EC:
 	BCS PRG007_A304	 ; If Player is NOT wearing Hammer Suit, jump to PRG007_A304
 
 	; Calculate the hammer X velocity offset
-	LDA <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
-	ASL A			; ... so this makes a positive or negative sign
-	EOR <Player_XVel	; XOR in the Player's X velocity
-	BPL PRG007_A302	 	; If result is positive, jump to PRG007_A302
+	;springldc don't change velocity based on marios movement
+	;removed code to fit other stuff
+	
+	;LDA <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
+	;ASL A			; ... so this makes a positive or negative sign
+	;EOR <Player_XVel	; XOR in the Player's X velocity
+
+	;BPL PRG007_A302	 	; If result is positive, jump to PRG007_A302
 
 	; Otherwise, set Temp_Var1 = Player_XVel
-	LDA <Player_XVel
-	STA <Temp_Var1
+	;LDA <Player_XVel
+	;STA <Temp_Var1
 
 PRG007_A302:
-	LDA #$10	 ; A = $10 (Hammer)
+	;springldc hammer x velocity fireball=03 higher=faster
+	;LDA #$10	 ; A = $10 (Hammer)
+	LDA #$03	 ; A = $10 (Hammer)
 
 PRG007_A304:
 	LDY <Player_FlipBits	; Keep in mind this is generally only $00 or $40 since Player doesn't vertically flip/etc.
@@ -640,9 +653,13 @@ PRG007_A30B:
 PlayerFireball_Pats:		.byte $65, $67, $65, $67
 PlayerFireball_FlipBits:	.byte SPR_PAL1, SPR_PAL1, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP, SPR_PAL1 | SPR_HFLIP | SPR_VFLIP
 
-PlayerHammer_FlipBits:	.byte $00, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP
+;springldc
+;PlayerHammer_FlipBits:	.byte $00, SPR_VFLIP, SPR_HFLIP | SPR_VFLIP, SPR_HFLIP
+PlayerHammer_FlipBits:	.byte $00, SPR_HFLIP, SPR_HFLIP | SPR_VFLIP, SPR_VFLIP
+;springldc sprite offsets relative to actual position
 PlayerHammer_YOff:	.byte $00 ; NOTE: Next three values overlap into following table)
-PlayerHammer_XOff:	.byte $06, $06, $00, $00
+;PlayerHammer_XOff:	.byte $06, $06, $00, $00
+PlayerHammer_XOff:	.byte $03, $03, $00, $00
 
 PRG007_A328:
 	RTS
@@ -730,32 +747,47 @@ PRG007_A378:
 
 	; Hammer specific velocity code...
 
-	LDA PlayerProj_XVel,X
-	ASL A
-	ASL A
-	ASL A
-	ASL A		 	; Fractional part shifted up
-	ADD PlayerProj_XVelFrac,X
-	STA PlayerProj_XVelFrac,X	; Add to object's X vel fractional accumulator
+	;LDA PlayerProj_XVel,X
+	;ASL A
+	;ASL A
+	;ASL A
+	;ASL A		 	; Fractional part shifted up
+	;ADD PlayerProj_XVelFrac,X
+	;STA PlayerProj_XVelFrac,X	; Add to object's X vel fractional accumulator
 
-	PHP		 ; Save CPU status
+	;PHP		 ; Save CPU status
 
-	LDA PlayerProj_XVel,X	; Get X Velocity
-	LSR A
-	LSR A
-	LSR A
-	LSR A		 ; Whole part shifted down (integer)
-	CMP #%00001000	 ; Check the sign bit
-	BLT PRG007_A3AC	 ; If the value was not negatively signed, jump to PRG007_A3AC
-	ORA #%11110000	 ; Otherwise, apply a sign extension
+	;LDA PlayerProj_XVel,X	; Get X Velocity
+	;LSR A
+	;LSR A
+	;LSR A
+	;LSR A		 ; Whole part shifted down (integer)
+	;CMP #%00001000	 ; Check the sign bit
+	;BLT PRG007_A3AC	 ; If the value was not negatively signed, jump to PRG007_A3AC
+	;ORA #%11110000	 ; Otherwise, apply a sign extension
+	
+	;springldc more hammer velocity stuff
+	LDA PlayerProj_X,X
+	ADD PlayerProj_XVel,X
+	STA PlayerProj_X,X
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+
 PRG007_A3AC:
-	PLP		 ; Restore CPU status
+	;PLP		 ; Restore CPU status
 
-	ADC PlayerProj_X,X	 ; Apply X velocity
-	STA PlayerProj_X,X	 ; Update X
+	;ADC PlayerProj_X,X	 ; Apply X velocity
+	;STA PlayerProj_X,X	 ; Update X
 
 	LDA PlayerProj_Cnt,X
-	AND #$07
+	;springldc how quick it drops fireball=03 07=slow big arc 01=fast drop 00=very fast drop
+	;AND #$07
+	AND #$03
 	BNE PRG007_A3BD	 ; 1:8 ticks proceed, otherwise jump to PRG007_A3BD
 
 	INC PlayerProj_YVel,X	 ; Increase Y velocity (gravity)
@@ -855,11 +887,11 @@ PRG007_A40E:
 	CMP #$02
 	BNE PRG007_A471	 ; If this is NOT the hammer, jump to PRG007_A471
 
-	; Hammer only...
+	;springldc Ice only...
 
 	LDA <Player_Suit
-	CMP #PLAYERSUIT_HAMMER
-	BNE PlayerProj_ChangeToPoof	 ; If Player is NOT wearing the Hammer Suit anymore (uh oh), jump to PlayerProj_ChangeToPoof
+	CMP #PLAYERSUIT_ICE
+	BNE PlayerProj_ChangeToPoof	 ; If Player is NOT wearing the Ice Suit anymore (uh oh), jump to PlayerProj_ChangeToPoof
 
 	LDA PlayerProj_Cnt,X
 	LSR A
@@ -927,7 +959,10 @@ PRG007_A48C:
 
 	; Gameplay not halted...
 
-	BCS PRG007_A49A	 ; If this is the hammer, jump to PRG007_A49A (PlayerProj_HitEnemies)
+	;springldc hammers detect world
+	;BCS PRG007_A49A	 ; If this is the hammer, jump to PRG007_A49A (PlayerProj_HitEnemies)
+	NOP
+	NOP	 ; If this is the hammer, jump to PRG007_A49A (PlayerProj_HitEnemies)
 
 	JSR Fireball_DetectWorld	 ; Hit tests for fireball (bounce, poof, etc.)
 
@@ -1068,7 +1103,18 @@ PRG007_A52D:
 
 	PLA		 ; Restore adjusted tile
 	STA <Temp_Var1	 ; -> Temp_Var1
-
+	
+	;springldc check if its a coin
+	;probably a better way to do all this, but it works
+	CMP #TILEA_COIN
+	BNE NotACoin
+	
+	JSR FindTileTransform
+	BCC PRG007_A557
+	JSR Fireball_ThawTile
+	JMP PRG007_A566
+	
+NotACoin:
 	CMP Tile_AttrTable,Y
 	BLT PRG007_A557	 ; If this tile is not solid on top, jump to PRG007_A557
 
@@ -1078,19 +1124,12 @@ PRG007_A52D:
 	BLT PRG007_A59F	 ; If this tile is not solid on the sides/bottom, jump to PRG007_A59F
 
 	; Tile is solid all around
+	;springldc
+	JSR FindTileTransform	; bfc- make the muncher or coin change according to player's suit and according to tile touched.
+	BCC PRG007_A566   		; not a transformable tile, so keep moving on...
 
-	LDY Level_TilesetIdx
-	CPY #$0b
-	BNE PRG007_A566	 ; If this is not an Ice level, jump to PRG007_A566
-
-	CMP #TILE12_FROZENMUNCHER
-	BNE PRG007_A55D		; If the fireball did not hit a frozen muncher, jump to PRG007_A55D
-
-	; Fireball hit a frozen muncher!
-
-	LDA #CHNGTILE_FROZENMUNCHER
-	BNE PRG007_A563	 ; Jump (technically always) to PRG007_A563
-
+	JSR Fireball_ThawTile	; something was found; whichever of the four tiles that need to be toggled are put into this subroutine now.
+	JMP PRG007_A566
 PRG007_A557:
 
 	; Fireball_HitChkPass = 0
@@ -1098,18 +1137,6 @@ PRG007_A557:
 	STA Fireball_HitChkPass,X
 
 	RTS		 ; Return
-
-PRG007_A55D:
-	CMP #TILE12_FROZENCOIN
-	BNE PRG007_A566	 ; If the fireball did not hit a frozen coin, jump to PRG007_A566
-
-	; Fireball hit a frozen coin!
-
-	LDA #CHNGTILE_FROZENCOIN
-
-PRG007_A563:
-	JSR Fireball_ThawTile	 ; Thaw the frozen tile!
-
 PRG007_A566:
 	LDA <Temp_Var1
 
@@ -1317,7 +1344,7 @@ PRG007_A648:
 	AND #OAT_WEAPONIMMUNITY
 	BNE PRG007_A667	 ; If object is immune to Player weapons, jump to PRG007_A667
 
-	JSR PlayerProj_HitObject	 ; See if Player Project hit an object and respond!
+	JSR PlayerProj_HitObject	 ; See if Player Projectile hit an object and respond!
 
 PRG007_A667:
 	DEY		 ; Y--
@@ -1354,6 +1381,15 @@ PlayerProj_HitObject:
 	LDX <SlotIndexBackup	; X = Player Projectile slot index
 	BGE PRG007_A6FD	 	; If projectile is out of range horizontally, jump to PRG007_A6FD (RTS)
 
+	;springldc enemy still frozen check
+	LDA Objects_FrozenTimer,Y
+	BEQ ProjectileHit
+	;poof projectile and move on
+	JSR PlayerProj_ChangeToPoof
+	JMP PRG007_A6FD
+
+	;springldc what projectile hit
+ProjectileHit:
 	LDA PlayerProj_ID,X
 	CMP #$02
 	BEQ PRG007_A6BD	 ; If this is a hammer, jump to PRG007_A6BD
@@ -1397,7 +1433,13 @@ PRG007_A6C9:
 
 
 PRG007_A6DD:
+	;springldc
+	LDA PlayerProj_ID,X
+	CMP #$02
+	BNE FireballKill
+	JMP HammerHitFreeze    ; hammer freezes not kills
 
+FireballKill:	
 	; Enemy bounces upward a bit
 	LDA #-$34
 	STA Objects_YVel,Y
@@ -1423,7 +1465,9 @@ PRG007_A6EC:
 	; But the enemy is killed...
 	LDA #OBJSTATE_KILLED
 	STA Objects_State,Y
-
+	JSR PlayerProj_ChangeToPoof
+	RTS
+	
 PRG007_A6FD:
 	RTS		 ; Return
 
@@ -5139,7 +5183,9 @@ SObj_Fireball:
 	JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
 
 	LDA SpecialObj_YVel,X
-	CMP #$30
+	;springldc
+	;CMP #$30
+	CMP #$38
 	BPL PRG007_BA1A	 ; If fireball Y vel < $30, jump to PRG007_BA1A
 
 	; Heavier gravity
@@ -5162,7 +5208,9 @@ PRG007_BA24:
 PRG007_BA2D:
 	JSR SObj_AddXVelFrac	 ; Apply X velocity
 	JSR SObj_AddYVelFrac	 ; Apply Y velocity
-
+	;springldc
+	;JSR SObj_ApplyXYVelsWithGravity	 ; Apply X and Y velocities with gravity
+	;JSR SObj_CheckHitSolid	 ; Bounce fireball off surfaces
 PRG007_BA33:
 	JSR SObj_GetSprRAMOffChkVScreen
 	BNE PRG007_BA92	 ; If fireball isn't vertically on-screen, jump to PRG007_BA92
@@ -6260,4 +6308,10 @@ PRG007_BFDC:
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty
-
+;springldc
+HammerHitFreeze:
+	LDA #$A9
+;set freeze duration
+	STA Objects_FrozenTimer,Y
+	JSR PlayerProj_ChangeToPoof
+	RTS  

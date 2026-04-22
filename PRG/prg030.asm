@@ -1773,190 +1773,239 @@ PRG030_8B9A:
 	JMP PRG030_8CB8	 ; Jump to PRG030_8CB8 (skipping code related to the "Boxing out" effect, removed in US version)
 
 	; Leftover optional code, see below
-	LDA #$00
-	STA <Map_EnterLevelFX		 ; Map_EnterLevelFX = 0
+	;springldc
+ObjStateFrozen:
+	;store freeze timer value
+	LDA Objects_FrozenTimer,X
+	PHA
+	
+	;zero the timer to stop dostateaction infinite loop
+	LDA #0
+	STA Objects_FrozenTimer,X
+	
+	;save realy player_haltgame value
+	LDA <Player_HaltGame
+	PHA
+	
+	;force player_haltgame value to nonzero
+	INC <Player_HaltGame
+	
+	;run enemy state code, otherwise it would stop animating/changing direction
+	JSR Object_DoStateAction
+	
+	;restore the player_haltgame value
+	PLA
+	STA <Player_HaltGame
+	
+	;change palette while frozen taken from 3mix 
+	LDY Object_SprRAM,X		; Offset to sprite RAM
+	LDA #6
+	STA <Temp_Var1			; Temp_Var1 = 6 (loop counter)
+FrozenPalLoop:
+	LDA Sprite_RAM+$02,Y	; Get current attributes
+	AND #~SPR_PAL3			; Clear any palette bits (set palette 0)
+	STA Sprite_RAM+$02,Y	; Set new attributes
+	
+	INY
+	INY
+	INY
+	INY						; Y += 4 (next sprite)
+	
+	DEC <Temp_Var1				; Temp_Var1--
+	BNE FrozenPalLoop	; While Temp_Var1 > 0, loop!
+	;restore frozen timer and dec
+	PLA
+	SEC
+	SBC #1
+	STA Objects_FrozenTimer,X
+	
+	;color cycle when about to thaw
+	LDA Objects_FrozenTimer,X
+	CMP #$38
+	BGE FrozenNoFlicker
 
-	; ORIGINAL VERSION DID THIS (addresses relate to original code!):
-;	LDA Level_Tileset
-;	CMP #15
-;	BEQ PRG030_8BC2	 ; If Level_Tileset = 15 (bonus game intro), jump to PRG030_8BC2
-;
-;	LDA Map_UNK713
-;	BEQ PRG030_8BC5	 ; If Map_UNK713 = 0, jump to PRG030_8BC5
-;
-;PRG030_8BC2:
-;	JMP PRG030_8CC9	 ; Jump to PRG030_8CC9
-;
-;PRG030_8BC5:
-;	LDA #$00
-;	STA <Map_EnterLevelFX		 ; Map_EnterLevelFX = 0
-;PRG030_8CC9:
+	;counter that runs globally every frame, change the and for slower/faster flicker
+	;taken from 3mix prg30
+	LDA <Counter_1
+	AND #$08
+	BEQ FrozenNoFlicker
 
-	JSR Map_Clear_EntTranMem	 ; Clear entrance transition memory
+	LDY Object_SprRAM,X
+	LDA #6
+	STA <Temp_Var1
+FrozenFlickerLoop:
+	LDA Sprite_RAM+$02,Y
+	EOR #SPR_PAL3
+	STA Sprite_RAM+$02,Y
+	INY
+	INY
+	INY
+	INY
+	DEC <Temp_Var1
+	BNE FrozenFlickerLoop
 
-	LDA #$ff
-	STA Map_EntTran_Temp	 ; Map_EntTran_Temp = $ff
+FrozenNoFlicker:
+	JSR FrozenCollision
+	RTS
+ 
+FrozenCollision:
+	;did we touch the enemy
+	JSR Object_HitTest
+	BCC FrozenCollisionNo
+	
+	;shelled check
+	LDA Objects_State,X
+	CMP #OBJSTATE_SHELLED
+	BNE FrozenNotPickup
 
-	LDA Level_7Vertical
-	BEQ PRG030_8BD5	 	; If not a vertical level, jump to PRG030_8BD5
+	;pickup checks
+	BIT <Pad_Holding
+	BVC FrozenNotPickup
+	LDA Player_ISHolding_OLD
+	BNE FrozenNotPickup
+	LDA #OBJSTATE_HELD
+	STA Objects_State,X
+	RTS
 
-	; Set address as appropriate for vertical
-	LDY Level_SizeOrig
-	LDA Tile_Mem_AddrVL,Y
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_AddrVH,Y
-	STA <Map_Tile_AddrH
-
-	JMP PRG030_8BDF	; Jump to PRG030_8BDF
-
-PRG030_8BD5: 
-
-	; First screen is always where non-vertical maps start
-	LDA Tile_Mem_Addr
-	STA <Map_Tile_AddrL
-	LDA Tile_Mem_Addr+1
-	STA <Map_Tile_AddrH
-
-PRG030_8BDF:
-	LDA #$00	
-	STA Map_EntTran_VLHalf	 ; Map_EntTran_VLHalf = 0
-
-	LDA <Vert_Scroll
-	BEQ PRG030_8BF4	 	; If Vert_Scroll = 0, jump to PRG030_8BF4
-
-	; Otherwise, offset initial address by $F0 (15 rows) and
-	; flag we're performing this on the lower vertical
-	LDA <Map_Tile_AddrL
-	ADD #$f0	 
-	STA <Map_Tile_AddrL	; Map_Tile_AddrL += $F0
-
-	LDA #$01
-	STA Map_EntTran_VLHalf	 ; Map_EntTran_VLHalf = 1
-
-PRG030_8BF4:
-	LDY #$04	; Y = 4 (search begin)
-
-PRG030_8BF6:
-	LDA <Vert_Scroll
-	CMP BoxOut_ByVStart,Y
-	BEQ PRG030_8C00
-	DEY		 ; Y--
-	BPL PRG030_8BF6	 ; While Y >= 0, loop
-
-PRG030_8C00:
-	STY Map_EntTran_InitValIdx ; Store initial value index
-
-	LDA BoxOut_InitVAddrH,Y	 ; Get initial high part of VRAM address
-	STA Map_EntTran_BVAddrH
-	STA Map_EntTran_BVAddrH+1
-	STA Map_EntTran_BVAddrH+2
-	STA Map_EntTran_BVAddrH+3
-
-	; Copy in the four low bytes
-	LDA BoxOut_InitVAddrL0,Y
-	STA Map_EntTran_BVAddrL	
-
-	LDA BoxOut_InitVAddrL2,Y
-	STA Map_EntTran_BVAddrL+2
-
-	LDA BoxOut_InitVAddrL1,Y
-	STA Map_EntTran_BVAddrL+1
-
-	LDA BoxOut_InitVAddrL3,Y
-	STA Map_EntTran_BVAddrL+3
-
-	LDA #$00
-	STA Map_EntTran_BorderLoop	 ; Map_EntTran_BorderLoop = 0
-
-	LDA #$04
-	STA Map_EntTran_TBCnt	 ; Map_EntTran_TBCnt = 4
-
-	LDY #$01	
-	STY Map_EntTran_LRCnt	 ; Map_EntTran_LRCnt= 1
-
-	LDA #$00	 
-	STA Update_Select	; Insist (again!) that Update_Select = 0
-
-PRG030_8C3E:
-	JSR GraphicsBuf_Prep_And_WaitVSync	; VSync
-
-	; Set page @ A000 as appropriate by Level_Tileset
-	LDY Level_Tileset
-	LDA PAGE_A000_ByTileset,Y
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
-
-	LDX Map_EntTran_BorderLoop	 ; X = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-
-	LDA Map_EntTran_BVAddrH,X	 ; Get high byte of VRAM addres
-	STA Map_EntTran_VAddrH	 	; Store it
-
-	LDA Map_EntTran_BVAddrL,X	 ; Get low byte of VRAM address
-	STA Map_EntTran_VAddrL	 	; Store it
-
-	LDA Map_EntTran_BorderLoop	 ; A = current border index (0-3: Top 0, bottom 1, right 2, left 3)
-	AND #$02
-	BNE PRG030_8C74	 		; If not updating top/bottom, jump to PRG030_8C74
-
-	; top/bottom update...
-	LDX Map_EntTran_TBCnt
-
-	LDA #$01
-	STA Map_EntTran_VRAMGap	 ; Map_EntTran_VRAMGap = 1
-
-	LDA Map_EntTran_VAddrL
-	AND #$01
-	BEQ PRG030_8C8C	 ; If on even address, jump to PRG030_8C8C
-	BNE PRG030_8C83	 ; If on odd address, jump to PRG030_8C83
-
-PRG030_8C74:
-
-	; left/right update...
-	LDX Map_EntTran_LRCnt
-
-	LDA #32
-	STA Map_EntTran_VRAMGap	 ; PRG030_8C8C = 32
-
-	LDA Map_EntTran_VAddrL
-	AND #$20
-	BEQ PRG030_8C8C	 ; If on 32 byte aligned address, jump to PRG030_8C8C
-
-PRG030_8C83:
-	JSR BoxOut_PutPatternInStrip	 ; Put an 8x8 pattern into the strip
-	JSR BoxOut_SetThisBorderVRAM	 ; Set the VRAM offset for this border
-	DEX		 		; X-- (counter decrement)
-	BMI PRG030_8CAA	 		; If X < 0, jump to PRG030_8CAA
-
-PRG030_8C8C:
-	JSR BoxOut_PutPatternInStrip	 ; Put an 8x8 pattern into the strip
-	DEX		 		; X-- (counter decrement)
-	BMI PRG030_8CAA	 		; If X < 0, jump to PRG030_8CAA
-
-	INC <Temp_Var14		 ; Temp_Var14++ (tile pattern layout high, jump to next pattern)
-
-	LDA Map_EntTran_VRAMGap
-	AND #$01	
-	BEQ PRG030_8C9D	 	; If Map_EntTran_VRAMGap & 1 jump to PRG030_8C9D
-
-	INC <Temp_Var14		 ; Temp_Var14++ (tile pattern layout high, jump to next pattern)
-
-PRG030_8C9D:
-	LDA [Temp_Var13],Y	 ; Get 8x8 pattern
-	STA <Scroll_ColorStrip,X	 ; Store into strip
-
-	JSR BoxOut_SetThisBorderVRAM	; Set border VRAM
-	JSR BoxOut_SetThisBorderVRAM	; Called twice??
-	DEX		 ; X--
-	BPL PRG030_8C8C	 ; While X >= 0, loop!
-
-PRG030_8CAA:
-	LDA #$02
-	STA <Map_EnterLevelFX	 ; Map_EnterLevelFX = 2 (begin the proper box out effect!)
-
-	LDA Map_EntTran_Cnt
-	CMP #$34	 
-	BEQ PRG030_8CB8	 ; If Map_EntTran_Cnt = $34, jump to PRG030_8CB8
-	JMP PRG030_8C3E	 ; Otherwise, loop!
+FrozenNotPickup:	
+	;is player above the enemy
+	LDA <Player_SpriteY
+	ADD #24
+	CMP <Temp_Var5
+	;go to side or bottom collision, uncomment this and comment out the other for side/bottom collision
+	;BGE FrozenCollisionNotTop
+	BGE FrozenCollisionNo
+	
+	;falling?
+	LDA <Player_YVel
+	BMI FrozenCollisionNo
+	
+	JSR FrozenStanding
+	
+FrozenCollisionNo:
+	RTS
+	
+FrozenCollisionNotTop:
+	JMP Player_GetHurt
+	
+FrozenStanding:
+	;set player in air to 0
+	LDA #0
+	STA <Player_InAir
+	
+	;snap to enemy
+	LDA <Objects_SpriteY,X
+	SEC
+	SBC <Temp_Var5
+	CLC
+	ADC #30
+	STA <Temp_Var1
+	
+	LDA <Objects_Y,X
+	SEC
+	SBC <Temp_Var1
+	STA <Player_Y
+	
+	LDA <Objects_YHi,X
+	SBC #0
+	STA <Player_YHi
+	
+	RTS
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
 
 PRG030_8CB8:
 	; End of box-out effect (removed in US version)
@@ -5938,4 +5987,72 @@ PRG030_9FAF:
 	JMP IntIRQ_32PixelPartition_Part3
 
 ; NOTE: The remaining ROM space was all blank ($FF)
+;springldc
+CheckFrozen_30:
+    LDA Objects_State,X
+    CMP #OBJSTATE_INIT
+    BEQ NotFrozen
+    LDA Objects_FrozenTimer,X
+    BEQ NotFrozen
+    JMP ObjStateFrozen
+NotFrozen:
+    LDA Objects_State,X
+    JMP NotFrozen_00  ; jump back to prg000
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Tile Transform for Muncher and Coin Variants - BlueFinch ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+TileTransform_From:
+	.byte TILEA_FROZENMUNCHER	; bfc- Universal Frozen Muncher
+	.byte TILEA_FROZENCOIN		; bfc- Universal Frozen Muncher
+	.byte TILEA_MUNCHER
+	.byte TILEA_COIN
+
+TileTransform_To:	;	Values here are the Level_ChgTileEvent order in prg029 (also, see registered in SMB3.asm)
+	.byte	$10		;	TILEA_MUNCHER
+	.byte 	$11		;	TILEA_COIN
+	.byte 	$13		;	TILEA_FROZENMUNCHER
+	.byte 	$14		;	TILEA_FROZENCOIN
+
+TileTransformCount = 4	; if expanded, expand here, and in these LUTs and elsewhere (Level_ChgTileEvent in prg029, and maybe even SMB3.asm)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+FindTileTransform:
+	LDY #$00
+
+FTT_Loop:
+	CPY #TileTransformCount
+	BEQ FTT_notfound
+
+	CMP TileTransform_From,Y
+	BEQ FTT_SuitCheck
+
+	INY
+	BNE FTT_Loop
+
+FTT_SuitCheck:
+	CPY #$02
+	BLT FTT_ThawCheck
+
+FTT_FreezeCheck:
+	LDA <Player_Suit
+	CMP #PLAYERSUIT_ICE		; yes, jankily based on player_suit rather than projectile. fix this to be proper.
+	BNE FTT_notfound
+	JMP FTT_APPLY
+
+FTT_ThawCheck:
+	LDA <Player_Suit
+	CMP #PLAYERSUIT_FIRE	; yes, jankily based on player_suit rather than projectile. fix this to be proper.
+	BNE FTT_notfound
+
+FTT_APPLY:
+	LDA TileTransform_To,Y
+	SEC
+	RTS
+
+FTT_notfound:
+	CLC
+	RTS

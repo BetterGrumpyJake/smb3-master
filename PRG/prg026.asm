@@ -901,7 +901,9 @@ InvItem_PerPowerUp_Palette:
 	.byte $16, $36, $0F, $FF	; Leaf
 	.byte $2A, $36, $0F, $FF	; Frog Suit
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
-	.byte $30, $36, $0F, $FF	; Hammer Suit
+	;springldc
+	;.byte $30, $36, $0F, $FF	; Hammer Suit
+	.byte $21, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
 	.byte $16, $36, $0F, $FF	; P-Wing
 
@@ -913,7 +915,9 @@ InvItem_PerPowerUp_Palette2:
 	.byte $1A, $36, $0F, $FF	; Leaf
 	.byte $2A, $36, $0F, $FF	; Frog Suit
 	.byte $17, $36, $0F, $FF	; Tanooki Suit
-	.byte $30, $36, $0F, $FF	; Hammer Suit
+	;springldc
+	;.byte $30, $36, $0F, $FF	; Hammer Suit
+	.byte $21, $36, $0F, $FF	; Hammer Suit
 	.byte $30, $36, $0F, $FF	; Judgems Cloud
 	.byte $1A, $36, $0F		; P-Wing (note lack of 4th byte)
 

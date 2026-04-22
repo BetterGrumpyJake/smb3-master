@@ -2529,12 +2529,14 @@ PRG029_DC82:
 	.word TileChng_OneTile		; $10 - CHNGTILE_FROZENMUNCHER
 	.word TileChng_OneTile		; $11 - CHNGTILE_FROZENCOIN
 	.word TileChng_OneTile		; $12 - CHNGTILE_PSWITCHAPPEAR
-	.word TileChng_DoorAppear	; $13 - CHNGTILE_DOORAPPEAR
-	.word TileChng_ToadBoxOpen	; $14 - CHNGTILE_TOADBOXOPEN
+	.word TileChng_OneTile		; springldc $13 - CHNGTILE_MUNCHER
+	.word TileChng_OneTile		; springldc $14 - CHNGTILE_COIN
 	.word ChngTile_32x32		; $15 - CHNGTILE_4WAYCANNON
 	.word ChngTile_32x32		; $16 - GiantBlock_BrickBust
 	.word ChngTile_32x32		; $17 - GiantBlock_BlockHit
 	.word ChngTile_32x32		; $18 - GiantBlock_BrickRestore
+	.word TileChng_DoorAppear	; springldc $19 - CHNGTILE_DOORAPPEAR
+	.word TileChng_ToadBoxOpen	; springldc $1A - CHNGTILE_TOADBOXOPEN
 
 
 	; Tile to "change to"; just for updating the level grid
@@ -2547,6 +2549,7 @@ OneTile_ChangeToTile:
 	.byte TILEA_NOTE, TILEA_HNOTE, TILEA_BRICK, TILEA_BLOCKEMPTY
 	.byte TILEA_PSWITCH_PRESSED, TILE2_HANGGLOBE_CABLE, TILEA_BRICKCOIN, TILE9_PIPEWORKS_CRACK
 	.byte TILE1_SKY, TILE2_SPIKEUP, TILE2_DONUTLIFT, TILE4_MUNCHER, TILEA_COIN, TILEA_PSWITCH
+	.byte TILEA_FROZENMUNCHER, TILEA_FROZENCOIN ; springldc
 
 	; Defines each of the four 8x8 patterns that make up the tile
 	; Too bad Nintendo couldn't keep things like this in one spot :)
@@ -2569,7 +2572,8 @@ OneTile_ChangeToPatterns:
 	.byte $92, $CA, $93, $CB	; $10 - CHNGTILE_FROZENMUNCHER
 	.byte $DC, $DE, $DD, $DF	; $11 - CHNGTILE_FROZENCOIN
 	.byte $E0, $E2, $E1, $E3	; $12 - CHNGTILE_PSWITCHAPPEAR
-
+	.byte $EC, $EE, $ED, $EF	; springldc $13 - CHNGTILE_MUNCHER	EC-EF
+	.byte $94, $96, $95, $97	; springldc $14 - CHNGTILE_COIN		94-97
 
 TileChng_OneTile:
 	LDX Level_ChgTileEvent

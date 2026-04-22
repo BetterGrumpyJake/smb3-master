@@ -1075,7 +1075,9 @@ PowerUp_Palettes:
 	.byte $00, $00, $00, $00	; 3 - Leaf (Not used, uses 0 or 1 as appropriate)
 	.byte $00, $2A, $36, $0F	; 4 - Frog Suit
 	.byte $00, $17, $36, $0F	; 5 - Tanooki Suit
-	.byte $00, $30, $27, $0F	; 6 - Hammer Suit
+	;springldc
+	;.byte $00, $30, $27, $0F	; 6 - Hammer Suit
+	.byte $00, $21, $27, $0F	; 6 - Hammer Suit
 	.byte $00, $00, $10, $0F	; 7 - Tanooki Statue
 
 Level_SetPlayerPUpPal:
@@ -2344,6 +2346,8 @@ PRG008_AB5B:
 	JMP PRG008_AB83	 ; Jump to PRG008_AB83
 
 PRG008_AB62:
+	;springldc
+	;LDY #PLAYER_TOPWALKSPEED
 	LDY #Pad_Input
 
 	BIT <Pad_Holding
@@ -5150,10 +5154,12 @@ LATP_None:
 	RTS		 ; Return
 
 LATP_Flower:
+	;springldc change so it always gives fireflower
 	LDA #$00
 	STA PUp_StarManFlash	 ; PUp_StarManFlash = 0 (don't activate star man flash)
-
-	LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
+	
+	LDY #$02
+	;LDY #$05	 ; Y = 5 (spawn a mushroom) (index into PRG001 Bouncer_PUp)
 
 	LDA <Player_Suit
 	BEQ PRG008_B7F9	 ; If Player is small, jump to PRG008_B7F9
@@ -5173,7 +5179,7 @@ LATP_Leaf:
 	LDA <Player_Suit
 	BEQ PRG008_B807	 ; If Player is small, jump to PRG008_B807
 
-	LDY #$03	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)
+	LDY #$03	 ; Y = 3 (spawn a leaf) (index into PRG001 Bouncer_PUp)	
 
 PRG008_B807:
 	RTS		 ; Return
@@ -5211,16 +5217,33 @@ PRG008_B82F:
 	RTS		 ; Return
 
 LATP_CoinStar:
-	LDA #$80
-	STA PUp_StarManFlash	 ; Get that Starman flash ready just in case...
+	;springldc change the coinstar block to hammer suit
+	;lda 01=tanooki 02=frog 03=hammer
+	;LDA #$80
+	LDA #$03
+	STA PUp_StarManFlash	 
 
-	LDY #$04	 	; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
+	LDY #$04
 
-	LDA Player_StarInv
-	BNE PRG008_B83F	 ; If Player if invincible, jump to PRG008_B83F!
+	NOP			
+	NOP			
+	NOP			
+	NOP			
+	NOP			
+	NOP	
+	NOP
+	NOP
+	
+	;LDA #$80
+	;STA PUp_StarManFlash	 ; Get that Starman flash ready just in case...
+
+	;LDY #$04	 	; Y = 4 (spawn a starman) (index into PRG001 Bouncer_PUp)
+
+	;LDA Player_StarInv
+	;BNE PRG008_B83F	 ; If Player if invincible, jump to PRG008_B83F!
 
 	; Otherwise, sorry, just a coin :(
-	JMP LATP_Coin
+	;JMP LATP_Coin
 
 PRG008_B83F:
 	RTS		 ; Return

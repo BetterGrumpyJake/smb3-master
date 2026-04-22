@@ -4555,6 +4555,8 @@ PRG003_B781:
 
 	LDA <Player_HaltGame
 	BEQ PRG003_B78B	 ; If gameplay is not halted, jump to PRG003_B78B
+	;springldc fix blooper tails
+	JSR TailEnemy_MoveTailWithScroll
 
 	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
 
@@ -5790,6 +5792,8 @@ ObjNorm_FireSnake:
 	BEQ PRG003_BD95	 ; If gameplay is NOT halted, jump to PRG003_BD95
 
 PRG003_BD92:
+	;fix tail when screen is scrolled
+	JSR TailEnemy_MoveTailWithScroll
 	JMP PRG003_BB17	 ; Jump off to PRG003_BB17 (draws enemy) and don't come back!
 
 PRG003_BD95:

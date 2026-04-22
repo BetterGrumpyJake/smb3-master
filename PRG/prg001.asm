@@ -164,7 +164,7 @@ ObjectGroup00_Attributes:
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH24	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0A
 	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0B - OBJ_POWERUP_1UP
-	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OA1_PAL2 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0C - OBJ_POWERUP_STARMAN
 	.byte OA1_PAL1 | OA1_HEIGHT16 | OA1_WIDTH16	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OA1_PAL2 | OA1_HEIGHT32 | OA1_WIDTH24	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OA1_PAL0 | OA1_HEIGHT16 | OA1_WIDTH8	; Object $0F
@@ -1596,7 +1596,14 @@ PRG001_A7BF:
 	; Set a start palette
 	LDA Star_Palettes,Y
 	STA Objects_SprAttr,X
+	
+	;springldc if it's not 0=starman change to show right graphic
+	TYA
+	BEQ NotHammerTime
+	LDA #$4C
+	STA PatTable_BankSel+4
 
+NotHammerTime:
 	RTS		 ; Return
 
 
@@ -2079,18 +2086,27 @@ PRG001_A9F6:
 
 
 ObjHit_FireFlower:
+	;springldc fireflower just makes you fiery
 	LDA <Player_Suit
-	BNE PRG001_AA05	 ; If Player is not small, jump to PRG001_AA05
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	;BNE PRG001_AA05	 ; If Player is not small, jump to PRG001_AA05
 
 	; Player is small...
 
 	; NOTE: The "flashing" Fire Flower is never used (but can be found in the
 	; "lost" Big Question Block test level, and it grants you fire power 
 	; regardless of whether you're small or not!!)
-	LDY PUp_StarManFlash
-	BNE PRG001_AA05	 ; If fire flower came from Big (?) block, jump to PRG001_AA05
+	;LDY PUp_StarManFlash
+	;BNE PRG001_AA05	 ; If fire flower came from Big (?) block, jump to PRG001_AA05
 
-	JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
+	;JMP PRG001_A897	 ; Otherwise, jump to PRG001_A897
 
 PRG001_AA05:
 	CMP #$02

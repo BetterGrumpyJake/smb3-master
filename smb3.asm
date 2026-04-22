@@ -863,9 +863,11 @@ PLAYERSUIT_FIRE		= 2
 PLAYERSUIT_RACCOON	= 3
 PLAYERSUIT_FROG		= 4
 PLAYERSUIT_TANOOKI	= 5
-PLAYERSUIT_HAMMER	= 6
+;springldc
+PLAYERSUIT_ICE		= 6
 PLAYERSUIT_SUPERSUITBEGIN = PLAYERSUIT_FROG	; Marker for when "Super Suits" begin
-PLAYERSUIT_LAST		= PLAYERSUIT_HAMMER	; Marker for "last" suit (Debug cycler needs it)
+;springldc
+PLAYERSUIT_LAST		= PLAYERSUIT_ICE	; Marker for "last" suit (Debug cycler needs it)
 	Player_Suit:		.ds 1
 
 	Player_Frame:		.ds 1	; Player display frame
@@ -1638,12 +1640,17 @@ CHNGTILE_DELETEDONUT	= $0F
 CHNGTILE_FROZENMUNCHER	= $10
 CHNGTILE_FROZENCOIN	= $11
 CHNGTILE_PSWITCHAPPEAR	= $12
-CHNGTILE_DOORAPPEAR	= $13
-CHNGTILE_TOADBOXOPEN	= $14
-CHNGTILE_4WAYCANNON	= $15
+;springldc
+CHNGTILE_MUNCHER		= $13	; bfc- TILEA_FROZENMUNCHER
+CHNGTILE_COIN			= $14	; bfc- TILEA_FROZENCOIN
+CHNGTILE_4WAYCANNON		= $15
 CHNGTILE_GIANTBRICKBUST	= $16	; Giant World brick bust
 CHNGTILE_GIANTBLOCKHIT	= $17	; Giant World [?] block hit to metal
 CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant brick)
+;springldc
+CHNGTILE_DOORAPPEAR	= $19
+CHNGTILE_TOADBOXOPEN	= $1A
+
 	Level_ChgTileEvent:	.ds 1	; When non-zero, queues a "change tile" event
 
 	Level_NoStopCnt:	.ds 1	; A counter which continuously increments unless something is "stopping" the action
@@ -2742,7 +2749,7 @@ CFIRE_LASER		= $15	; Laser fire
 
 	Map_PrevMoveDir:	.ds 1	; Last SUCCESSFUL (allowed) movement direction on map R01 L02 D04 U08
 
-				.ds 8	; $7DD6-$7DDD unused
+	Objects_FrozenTimer:  .ds 8	; $7DD6-$7DDD unused
 
 	Pal_Data:		.ds 32	; $7DDE-$7DFD Holds an entire bg/sprite palette (this is the MASTER palette, what fades target, and others may source for "original" colors!)
 
@@ -3682,6 +3689,9 @@ TILEA_WOODBLOCKFLOWER	= $73	; Wood block which bounces and contains fire flower
 TILEA_WOODBLOCKLEAF	= $74	; Wood block which bounces and contains leaf
 TILEA_WOODBLOCKSTAR	= $75	; Wood block which bounces and contains star
 
+TILEA_FROZENMUNCHER = $77	; bfc- Universal Frozen Muncher			springldc
+TILEA_FROZENCOIN = $78		; bfc- Universal Frozen Coin			springldc
+
 TILEA_WOODBLOCK		= $79	; Standard solid wood block
 
 TILEA_GNOTE		= $BC	; Green note block (functions like standard white, just colored wrong)
@@ -3832,7 +3842,7 @@ TILE1_BBLOCKLL		= $CD	; Blue big block lower-left
 TILE1_BBLOCKLR		= $CE	; Blue big block lower-right
 TILE1_BBLOCKSB		= $CF	; Blue big block shadow bottom
 
-TILE1_WATERBUMPS1	= $D8	; Water ... not sure how to describe it
+TILE1_WATERBUMPS1	= $D8	; Water ... not sure how to describe it BFC- springldc, was in LoadLevel_TopDecoBlocks, now TILEA_FROZENMUNCHER / TILEA_FROZENCOIN
 TILE1_WATERBUMPS2	= $D9	; Water ... not sure how to describe it
 TILE1_WATERBUMPSSH	= $D9	; Water ... not sure how to describe it, shaded
 TILE1_WATERWAVEL	= $DB	; Water waving to the left

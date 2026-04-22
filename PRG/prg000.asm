@@ -306,9 +306,12 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00 | OAT_WEAPONIMMUNITY | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $08 - OBJ_PSWITCHDOOR
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $09 - OBJ_AIRSHIPANCHOR
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0A
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_1UP
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0D - OBJ_POWERUP_MUSHROOM
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0B - OBJ_POWERUP_1UP
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0C - OBJ_POWERUP_STARMAN
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $0D - OBJ_POWERUP_MUSHROOM
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY 	; Object $0B - OBJ_POWERUP_1UP
+	.byte OAT_BOUNDBOX01	; Object $0C - OBJ_POWERUP_STARMAN
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $0D - OBJ_POWERUP_MUSHROOM
 	.byte OAT_BOUNDBOX09 | OAT_HITNOTKILL	; Object $0E - OBJ_BOSS_KOOPALING
 	.byte OAT_BOUNDBOX00	; Object $0F
 	.byte OAT_BOUNDBOX00	; Object $10
@@ -320,12 +323,14 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00	; Object $16
 	.byte OAT_BOUNDBOX01	; Object $17 - OBJ_SPINYCHEEP
 	.byte OAT_BOUNDBOX13	; Object $18 - OBJ_BOSS_BOWSER
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $19 - OBJ_POWERUP_FIREFLOWER
+	.byte OAT_BOUNDBOX01	; Object $19 - OBJ_POWERUP_FIREFLOWER
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1A
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1B - OBJ_BOUNCELEFTRIGHT
 	.byte OAT_BOUNDBOX01	; Object $1C
 	.byte OAT_BOUNDBOX00	; Object $1D
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1E - OBJ_POWERUP_SUPERLEAF
+	.byte OAT_BOUNDBOX01	; Object $1E - OBJ_POWERUP_SUPERLEAF
 	.byte OAT_BOUNDBOX00 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $1F - OBJ_GROWINGVINE
 	.byte OAT_BOUNDBOX00	; Object $20
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $21 - OBJ_POWERUP_MUSHCARD
@@ -376,7 +381,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX00	; Object $4E
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $4F - OBJ_CHAINCHOMPFREE
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $50 - OBJ_BOBOMBEXPLODE
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $51 - OBJ_ROTODISCDUAL
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $51 - OBJ_ROTODISCDUAL
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $52 - OBJ_TREASUREBOX
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $53 - OBJ_PODOBOOCEILING
 	.byte OAT_BOUNDBOX12 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $54
@@ -385,13 +391,19 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX07	; Object $57 - OBJ_PIRANHASIDEWAYSRIGHT
 	.byte OAT_BOUNDBOX01	; Object $58 - OBJ_FIRECHOMP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $59 - OBJ_FIRESNAKE
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5A - OBJ_ROTODISCCLOCKWISE
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5B - OBJ_ROTODISCCCLOCKWISE
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $5C - OBJ_ICEBLOCK
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5A - OBJ_ROTODISCCLOCKWISE
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5B - OBJ_ROTODISCCCLOCKWISE
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $5C - OBJ_ICEBLOCK
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY ; Object $5A - OBJ_ROTODISCCLOCKWISE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $5B - OBJ_ROTODISCCCLOCKWISE
+	.byte OAT_BOUNDBOX01	; Object $5C - OBJ_ICEBLOCK
 	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5D - OBJ_TORNADO
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5E - OBJ_ROTODISCDUALOPPOSE
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
-	.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $60 - OBJ_ROTODISCDUALCCLOCK
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5E - OBJ_ROTODISCDUALOPPOSE
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
+	;.byte OAT_BOUNDBOX01 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $60 - OBJ_ROTODISCDUALCCLOCK
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $5E - OBJ_ROTODISCDUALOPPOSE
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $5F - OBJ_ROTODISCDUALOPPOSE2
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $60 - OBJ_ROTODISCDUALCCLOCK
 	.byte OAT_BOUNDBOX01	; Object $61 - OBJ_BLOOPERWITHKIDS
 	.byte OAT_BOUNDBOX01	; Object $62 - OBJ_BLOOPER
 	.byte OAT_BOUNDBOX13	; Object $63 - OBJ_BIGBERTHABIRTHER
@@ -412,7 +424,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX01 | OAT_BOUNCEOFFOTHERS	; Object $72 - OBJ_GOOMBA
 	.byte OAT_BOUNDBOX01	; Object $73 - OBJ_PARAGOOMBA
 	.byte OAT_BOUNDBOX01	; Object $74 - OBJ_PARAGOOMBAWITHMICROS
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_BOSSATTACK
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY | OAT_HITNOTKILL	; Object $75 - OBJ_BOSSATTACK
+	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $75 - OBJ_BOSSATTACK
 	.byte OAT_BOUNDBOX01	; Object $76 - OBJ_JUMPINGCHEEPCHEEP
 	.byte OAT_BOUNDBOX01	; Object $77 - OBJ_GREENCHEEP
 	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $78 - OBJ_BULLETBILL
@@ -470,7 +483,8 @@ Object_AttrFlags:
 	.byte OAT_BOUNDBOX15 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $AC - OBJ_FIREJET_LEFT
 	.byte OAT_BOUNDBOX12	; Object $AD - OBJ_ROCKYWRENCH
 	.byte OAT_BOUNDBOX11 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $AE - OBJ_BOLTLIFT
-	.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $AF - OBJ_ENEMYSUN
+	;.byte OAT_BOUNDBOX01 | OAT_FIREIMMUNITY	; Object $AF - OBJ_ENEMYSUN
+	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $AF - OBJ_ENEMYSUN
 	.byte OAT_BOUNDBOX13 | OAT_FIREIMMUNITY	; Object $B0 - OBJ_BIGCANNONBALL
 	.byte OAT_BOUNDBOX15 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $B1 - OBJ_FIREJET_RIGHT
 	.byte OAT_BOUNDBOX14 | OAT_WEAPONIMMUNITY | OAT_HITNOTKILL	; Object $B2 - OBJ_FIREJET_UPSIDEDOWN
@@ -557,7 +571,8 @@ MuncherJelectroSet:
 	; Bit 1 (2) = NOT able to slide on slopes
 PowerUp_Ability:
 	;     Small, Big, Fire, Leaf, Frog, Tanooki, Hammer
-	.byte $00,   $00, $00,  $01,  $02,  $01,     $02
+	;	.byte $00,   $00, $00,  $01,  $02,  $01,     $02
+	.byte $00, $00, $00, $01, $02, $01, $00
 
 	; Velocities set to X/Y directly to Player for what might be a now-unused debug routine of sorts
 PRG000_C3E7:
@@ -566,25 +581,25 @@ PRG000_C3E7:
 ; FIXME: Anybody want to claim this?
 ; Looks like maybe a leftover debug routine for some kind of "float around" mode maybe!!
 ; $C3EA 
-	LDA <Pad_Holding
-	AND #(PAD_LEFT | PAD_RIGHT)
-	TAY		 ; Y = 1 or 2
-
-	; Set Player X velocity directly??
-	LDA PRG000_C3E7,Y
-	STA <Player_XVel
-
-	LDA <Pad_Holding
-	LSR A
-	LSR A
-	AND #((PAD_UP | PAD_DOWN) >> 2)
-	TAY		 ; Y = 1 or 2
-
-	; Set Player Y velocity directly??
-	LDA PRG000_C3E7,Y
-	STA <Player_YVel
-
-	RTS		 ; Return
+;	LDA <Pad_Holding
+;	AND #(PAD_LEFT | PAD_RIGHT)
+;	TAY		 ; Y = 1 or 2
+;
+;	; Set Player X velocity directly??
+;	LDA PRG000_C3E7,Y
+;	STA <Player_XVel
+;
+;	LDA <Pad_Holding
+;	LSR A
+;	LSR A
+;	AND #((PAD_UP | PAD_DOWN) >> 2)
+;	TAY		 ; Y = 1 or 2
+;
+;	; Set Player Y velocity directly??
+;	LDA PRG000_C3E7,Y
+;	STA <Player_YVel
+;
+;	RTS		 ; Return
 
 	; Offsets into Sprite_RAM used by objects
 SprRamOffsets:
@@ -1797,7 +1812,9 @@ PRG000_C927:
 
 PRG000_C92F:
 	LDA <Player_Suit
-	CMP #PLAYERSUIT_HAMMER
+	;springldc
+	;CMP #PLAYERSUIT_HAMMER
+	CMP #PLAYERSUIT_ICE
 	BNE PRG000_C93A	 ; If Player suit is NOT hammer suit, jump to PRG000_C93A
 
 	; Otherwise...
@@ -2070,9 +2087,12 @@ PRG000_CA81:
 	JSR AScrlURDiag_CheckWrapping	; Handle diagonal autoscroll's scroll wrappping
 	JSR Object_DetermineVertVis	; Set flags based on which sprites of this object are vertically visible
 	JSR Object_DetermineHorzVis	; Set flags based on which sprites of this object are horizontally visible
+	
+	;springldc frozen check
+	;LDA Objects_State,X	 ; Get object state...
+	JMP CheckFrozen_30
 
-	LDA Objects_State,X	 ; Get object state...
-
+NotFrozen_00:
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
@@ -2175,7 +2195,7 @@ PRG000_CB10:
 
 	LDA <Player_HaltGame	 
 	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
- 
+
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
  
@@ -2739,7 +2759,8 @@ BrickBust_MoveOver:
 ; FIXME: Anybody want to claim this?
 ; Appears to override what goes in to Object_BumpBlocks
 ; $CDCF 
-	LDA Object_TileWall2
+	;springldc make some space
+	;LDA Object_TileWall2
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Object_BumpBlocks
@@ -2832,7 +2853,9 @@ Player_KickObject:
 	STA Sound_QPlayer
 
 	; Have Player do kick frame
-	LDA #$0c
+	;springldc shortened time between kick frame and able to shoot projectile
+	;LDA #$0c
+	LDA #$03
 	STA Player_Kick
 
 	; Set object timer 2 to $10
@@ -3155,14 +3178,14 @@ PRG000_CFA8:
 
 
 	; Unused space... deleted code?
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
+;	NOP
+;	NOP
+;	NOP
+;	NOP
+;	NOP
+;	NOP
+;	NOP
+;	NOP
 
 ObjState_Killed:
 	JSR Object_FallAndDelete	; Have object fall and delete if it gets too low (at which point we don't return)
@@ -3680,6 +3703,12 @@ PRG000_D1C4:
 	RTS		 ; Return
 
 PRG000_D1C5:
+	;springldc should a frozen enemy affect mario. don't hurt don't bop
+	LDA Objects_FrozenTimer,X
+	BNE PRG000_D1C4
+	LDA <Player_HaltGame
+	BNE PRG000_D1C4
+	
 	LDA Objects_Timer2,X
 	BNE PRG000_D1C4	 ; If timer 2 hasn't expired, jump to PRG000_D1C4 (RTS)
 
@@ -3870,7 +3899,6 @@ PRG000_D267:
 	JMP PRG000_D355	 ; Jump to PRG000_D355 (hurt Player!)
 
 PRG000_D272:
-
 	; Enemy got stomped!
 
 	LDY ObjGroupRel_Idx	 ; Y = group relative index
@@ -3895,7 +3923,6 @@ PRG000_D272:
 
 	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
 	; then go ahead into "shelled" state which redirects to "stomped" state.
-
 	LDA #OBJSTATE_SHELLED	 ; Otherwise, state is Shelled
 	BNE PRG000_D297	 ; Jump (technically always) to PRG000_D297
 
@@ -3908,14 +3935,11 @@ PRG000_D295:
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
-
 	RTS		 ; Return
 
 
 PRG000_D29B:
-
 	; Player NOT a statue and NOT in a Kuribo's shoe stomp code
-
 	LDA Objects_State,X
 	CMP #OBJSTATE_SHELLED
 	BNE PRG000_D2B4	 ; If object state is not shelled, jump to PRG000_D2B4 (typical stomp)
@@ -3938,7 +3962,6 @@ PRG000_D2B3:
 
 
 PRG000_D2B4:
-
 	; Set timer 2 to 8
 	LDA #$08	 
 	STA Objects_Timer2,X
@@ -4375,6 +4398,8 @@ Level_PrepareNewObject:
 	STA Objects_Frame,X	
 	STA Objects_ColorCycle,X
 	STA <Objects_DetStat,X	
+	;springldc clear frozen timer for new object
+	STA Objects_FrozenTimer,X
 
 	CPX #$06
 	BGE PRG000_D4C8	 ; If using slot index >= 6, jump to PRG000_D4C8 (skip variables available only to slots 0 to 5)
@@ -6701,7 +6726,7 @@ PRG000_DE03:
 
 	LDA #$00
 	STA Objects_XVelFrac	; Objects_XVelFrac = 0
-	STA THouse_UnusedFlag	; THouse_UnusedFlag = 0 (set here, never used otherwise)
+;	STA THouse_UnusedFlag	; THouse_UnusedFlag = 0 (set here, never used otherwise)
 
 	LDA #$ff	 
 	STA Objects_Timer	 ; Objects_Timer = $FF
