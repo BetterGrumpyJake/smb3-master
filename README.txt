@@ -1,14 +1,14 @@
-# smb3
-Disassembly of Super Mario Bros 3
+statue and shoe kills enemies and shells koopas
+stops kicked shells and thrown ice blocks
+side affect: 
+	sideways piranhas become shelled without fixing
+	green spiny eggs become shelled
+	
+PRG000_D272:
+	BEQ PRG000_D29B	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
 
-Specifically for use with NESASM (https://github.com/camsaul/nesasm), this will reassemble into a byte-for-byte perfect clone of Super Mario Bros. 3 US (PRG1)
+PRG000_D295:
+	LDA #OBJSTATE_SHELLED	 ; State is Killed
 
-NOTE: Included are support files for my "NoDice" level editor (game.xml and "icons" subdirectory) and "MusConv" (musconv.xml) utilities. They are not part of the actual source code required to build the ROM, but are necessary if you intend to use these tools.
-
--------------
-
-To assemble, simply run:
-
-nesasm smb3.asm
-
-Intended for use for research into the inner workings of SMB3 and highly technical ROM hacks (such as Super Mario Bros. 3Mix)
+PRG000_D29B:
+	CMP #OBJSTATE_KILLED

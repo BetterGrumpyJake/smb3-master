@@ -3891,7 +3891,9 @@ PRG000_D272:
 	LDY ObjGroupRel_Idx	 ; Y = object group relative index
 	LDA ObjectGroup_Attributes3,Y	 ; Get attribute set 3
 	AND #OA3_SQUASH
-	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
+	;j
+	;BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
+	BEQ PRG000_D29B
 
 	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
 	; then go ahead into "shelled" state which redirects to "stomped" state.
@@ -3904,7 +3906,9 @@ PRG000_D295:
 	; When stomped by statue/Kuribo, if the enemy was going to actually going to
 	; become shelled, kill it instead...
 
-	LDA #OBJSTATE_KILLED	 ; State is Killed
+	;LDA #OBJSTATE_KILLED	 ; State is Killed
+	;j
+	LDA #OBJSTATE_SHELLED
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
@@ -3917,7 +3921,9 @@ PRG000_D29B:
 	; Player NOT a statue and NOT in a Kuribo's shoe stomp code
 
 	LDA Objects_State,X
-	CMP #OBJSTATE_SHELLED
+	;j
+	;CMP #OBJSTATE_SHELLED
+	CMP #OBJSTATE_KILLED
 	BNE PRG000_D2B4	 ; If object state is not shelled, jump to PRG000_D2B4 (typical stomp)
 
 PRG000_D2A2:
