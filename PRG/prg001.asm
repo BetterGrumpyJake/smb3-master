@@ -2610,9 +2610,13 @@ ObjNorm_Vine:
 
 	PLA		 ; Restore tile detected by vine
 
-	CMP Tile_AttrTable,Y
-	BLT PRG001_AC86	 ; If vine is not within the solid tiles, jump to PRG001_AC86
-
+	;j
+	;CMP Tile_AttrTable,Y
+	;BLT PRG001_AC86
+	JMP VineCheck
+	NOP
+	NOP
+	
 PRG001_AC80:
 
 	; Set vine to dead/empty
@@ -6321,3 +6325,13 @@ PRG001_BF9B:
 
 ; Rest of ROM bank was empty
 
+VineCheck:
+	CMP Tile_AttrTable,Y
+	BLT VineNotSolid
+	CMP #TILEA_MUNCHER
+	BEQ VineNotSolid
+	CMP #TILE4_JELECTRO
+	BEQ VineNotSolid
+	JMP PRG001_AC80
+VineNotSolid:
+	JMP PRG001_AC86
