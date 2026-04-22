@@ -1829,7 +1829,7 @@ Object_DoMoveBounceConveyor:
 	BNE PRG003_A946	 ; If this isn't a Boom Boom ball, jump to PRG003_A946
 
 	LDA <Objects_Y,X
-	CMP #$70
+	CMP #$00
 	BLT ObjInit_BoomBoomQBall ; If ball is higher than $70, jump to ObjInit_BoomBoomQBall
 
 PRG003_A946:
