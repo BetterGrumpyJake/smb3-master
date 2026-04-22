@@ -980,7 +980,8 @@ ObjInit_BounceDU:
 	LDA Player_BounceObj
 	BNE PRG001_A4C6	 ; If this is actually an object that bounced, jump to PRG001_A4C6
 
-	LDA #$20	 
+	;j
+	LDA #$08 ;downward speed
 	STA <Player_YVel ; PRG001_A4C6 = $20 (bounce down)
 
 PRG001_A4BF:
