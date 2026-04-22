@@ -3891,7 +3891,9 @@ PRG000_D272:
 	LDY ObjGroupRel_Idx	 ; Y = object group relative index
 	LDA ObjectGroup_Attributes3,Y	 ; Get attribute set 3
 	AND #OA3_SQUASH
-	BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
+	;j
+	;BEQ PRG000_D295	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
+	BEQ PRG000_D29B	 ; If OA3_SQUASH NOT set, jump to PRG000_D295 (kill it)
 
 	; When stomped by statue/Kuribo, if the enemy was going to get squashed anyway
 	; then go ahead into "shelled" state which redirects to "stomped" state.
