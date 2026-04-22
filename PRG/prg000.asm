@@ -3904,7 +3904,9 @@ PRG000_D295:
 	; When stomped by statue/Kuribo, if the enemy was going to actually going to
 	; become shelled, kill it instead...
 
-	LDA #OBJSTATE_KILLED	 ; State is Killed
+	;j
+	;LDA #OBJSTATE_KILLED	 ; State is Killed
+	LDA #OBJSTATE_SHELLED
 
 PRG000_D297:
 	STA Objects_State,X	 ; Set appropriate object state
