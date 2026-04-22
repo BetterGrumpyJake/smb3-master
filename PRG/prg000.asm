@@ -2178,6 +2178,8 @@ PRG000_CB10:
  
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
 	JSR Object_Move	 		; Perform standard object movements
+	;j
+	JSR Object_HandleConveyorCarry
  
 	LDA <Objects_DetStat,X 
 	AND #$04 
@@ -2485,6 +2487,8 @@ ObjState_Kicked:
 
 PRG000_CC75:
 	JSR Object_Move	 ; Perform standard object movements
+	;j
+	JSR Object_HandleConveyorCarry
 	JSR Object_DetermineHorzVis	 ; Determine horizontally visible sprites
  
 	LDA <Objects_DetStat,X 
@@ -3155,12 +3159,7 @@ PRG000_CFA8:
 
 
 	; Unused space... deleted code?
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
+	;j
 	NOP
 	NOP
 
