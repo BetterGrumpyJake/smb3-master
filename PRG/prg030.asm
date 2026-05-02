@@ -2031,6 +2031,23 @@ _check_set_down:
 	STA ThrowDirection
 	RTS
 	
+AirborneShellKillAndMove:
+	;do the commented out Object_Move from prg0
+	JSR Object_Move
+	;only while shell is in air and touches an enemy kill, otherwise return
+	LDA <Objects_DetStat,X
+	AND #$04
+	BNE AirborneShellNoKill
+	JSR ObjectToObject_HitTest
+	BCC AirborneShellNoKill
+	;kill enemies
+	TYA
+	TAX
+	JSR ObjectKill_SetShellKillVars
+	LDX <SlotIndexBackup
+AirborneShellNoKill:
+	RTS
+	
 HitCeilingBumpBlocks_30:
 	;we are only throwing shells up so group 1 head row
 	LDY #10

@@ -2177,8 +2177,9 @@ PRG000_CB10:
 	BNE PRG000_CB5B	 ; If gameplay is halted, jump to PRG000_CB5B
 
 	JSR Object_ShellDoWakeUp	 ; Handle waking up (MAY not return here, if object "wakes up"!) 
-	JSR Object_Move	 		; Perform standard object movements
- 
+	JSR AirborneShellKillAndMove
+	;JSR Object_Move	 		; Perform standard object movements
+	
 	LDA <Objects_DetStat,X 
 	AND #$04 
 	BEQ PRG000_CB45	 ; If object hit floor, jump to PRG000_CB45 
