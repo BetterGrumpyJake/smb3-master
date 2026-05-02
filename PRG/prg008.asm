@@ -342,6 +342,7 @@ PRG008_A17F:
 	SUB #$90
 	STA Counter_Wiggly
 
+	;JSR Player_Update
 	;j
 	JSR SpawnShell_PlayerUpdate_30	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 

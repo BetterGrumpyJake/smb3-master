@@ -2815,18 +2815,23 @@ ObjState_Held:
 
 PRG000_CE28:
 	;j
-	;held shells don't wake up
+	;held shells don't wake up, neither do other held items. bombs don't explode, ice blocks don't disappear
 	;JSR Object_ShellDoWakeUp ; Wake up while Player is holding object... 
 	NOP
 	NOP
 	NOP
 	BIT <Pad_Holding 
-	BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
+	;orangeexpo
+	;BVC Player_KickObject	 ; If Player is NOT holding B button, jump to Player_KickObject  
+	BVC _check_throw_dir	 
 
 PRG000_CE2F:
 	JMP PRG000_CEEF	 ; Jump to PRG000_CEEF
 
-
+;;orangeexpo
+_check_throw_dir:
+	JSR SetThrowDirection
+	
 Player_KickObject:
 	LDA Level_PipeMove	 
 	BNE PRG000_CE2F	 ; If Player is moving through pipes, jump to PRG000_CE2F (PRG000_CEEF)
@@ -2986,8 +2991,10 @@ PRG000_CEDC:
 PRG000_CEE8:
 
 	; Set object's Y velocity to zero
-	LDA #$00
-	STA <Objects_YVel,X
+	;orangeexpo
+	;LDA #$00
+	;STA <Objects_YVel,X
+	JSR SetKickedYVel				  
 
 	JMP PRG000_CF98	 ; Jump to PRG000_CF98
 
@@ -3160,14 +3167,14 @@ PRG000_CFA8:
 
 
 	; Unused space... deleted code?
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
+	;NOP
+	;NOP
+	;NOP
+	;NOP
+	;NOP
+	;NOP
+	;NOP
+	;NOP
 
 ObjState_Killed:
 	JSR Object_FallAndDelete	; Have object fall and delete if it gets too low (at which point we don't return)
@@ -4034,11 +4041,14 @@ PRG000_D323:
 
 Object_SetShellState:
 	; Set Objects_State to Shelled
-	LDA #OBJSTATE_SHELLED
+	;LDA #OBJSTATE_SHELLED
+	;STA Objects_State,X
+	
 	;j
 	;poof bopped shell
-	;STA Objects_State,X
 	JSR ShellPoof_30
+	NOP
+	NOP
 
 	; Set timer 3 = $FF (wake up timer)
 	LDA #$ff
@@ -4060,6 +4070,7 @@ Object_HoldKickOrHurtPlayer:
 
 PRG000_D343:
 	LDA Player_ISHolding_OLD
+	;BNE PRG000_D39F	
 	;j
 	;bump shells while holding shell
 	;BNE PRG000_D39F	 ; If Player WAS holding something, jump to PRG000_D39F (RTS)
@@ -6107,7 +6118,7 @@ Obj2Obj_EnByState:
 	.byte $01	; State 0: Dead/Empty
 	.byte $01	; State 1: Initializing
 	.byte $00	; State 2: Normal
-	.byte $00	; State 3: Shelled, 00 for held shells kill sitting shells, 01 for held shells don't kill sitting shells
+	.byte $01	; State 3: Shelled, 00 for held shells kill sitting shells, 01 for held shells don't kill sitting shells
 	;j
 	;.byte $00	; State 4: Held
 	.byte $01	; State 4: Held
