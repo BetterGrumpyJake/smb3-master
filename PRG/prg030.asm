@@ -2010,6 +2010,10 @@ _skyv_set_yvel:
 	STA <Objects_YVel,X
 	LDA #OBJSTATE_SHELLED
 	STA Objects_State,X
+	;j
+	;reset shell wake up timer
+	LDA #$ff
+	STA Objects_Timer3,X
 _post_skyv:
 	RTS
 	
