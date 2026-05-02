@@ -10792,6 +10792,7 @@ BobOmb_StartXVel                 = $A6B1
 TDiagBox_RowOffs_End             = $B2BB
 ObjNorm_Stretch                  = $A960
 Video_3CMFlowStem                = $DFAE
+HitCeilingBumpBlocks_30          = $8C0B
 Object_ShellDoWakeUp             = $D0DB
 PRG000_C5A9                      = $C5A9
 CineKing_DiagHi                  = $7A04

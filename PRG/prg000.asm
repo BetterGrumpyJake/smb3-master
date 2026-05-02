@@ -2225,11 +2225,16 @@ PRG000_CB45:
 	LDA <Objects_DetStat,X 
 	AND #$08 
 	BEQ PRG000_CB4F	 ; If object has NOT hit ceiling, jump to PRG000_CB4F
- 
+	
+	;j
 	; Set object Y velocity to $10 (rebound off ceiling)
-	LDA #$10 
-	STA <Objects_YVel,X 
-
+	;LDA #$10 
+	;STA <Objects_YVel,X 
+	
+	;when shell hits ceiling redetect coords and bump blocks
+	JSR HitCeilingBumpBlocks_30
+	NOP
+	
 PRG000_CB4F:
 	LDA <Objects_DetStat,X 
 	AND #$03 

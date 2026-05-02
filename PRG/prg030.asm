@@ -2027,6 +2027,19 @@ _check_set_down:
 	STA ThrowDirection
 	RTS
 	
+HitCeilingBumpBlocks_30:
+	;we are only throwing shells up so group 1 head row
+	LDY #10
+	;detect the ceiling tile
+	JSR Object_DetectTile
+	;bump blocks if necessary
+	JSR Object_BumpBlocks
+	
+	;velocity shell falls back down
+	LDA #$10 
+	STA <Objects_YVel,X
+	RTS
+	
 	.org $8CB8
 
 PRG030_8CB8:
