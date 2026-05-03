@@ -1961,13 +1961,29 @@ PRG030_8B9A:
 ;orangeexpo
 ThrownYVels:
 	;     n/a  DOWN  UP
-	.byte $00, $04, -$60
+	.byte $00, $00, -$60
 	
 SetKickedYVel:
+	;get marios y velocity
+	LDA <Player_YVel
+	;if mario is rising use 0 for shells velocity
+	BMI ZeroShell
+	
+	;if shell is grounded yvel=0 fall through and also use 0
+	LDY <Objects_YVel,X
+	;otherwise mario is falling and shell is falling use players y vel still
+	BNE MarioFallingV
+	
+ZeroShell:
 	LDA #$00
+	
+MarioFallingV:
+	;use either marios y vel or 0 for the shells y velocity
 	STA <Objects_YVel,X
+	;if up/down weren't pressed RTS
 	LDY ThrowDirection
 	BEQ _post_skyv		; (RTS)
+	LDA #$00
 	STA ThrowDirection	; Zero this back out
 
 	TYA					; Get throw direction
