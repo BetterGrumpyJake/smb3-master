@@ -1710,8 +1710,16 @@ PRG008_A86C:
 	; VINE CLIMBING LOGIC
 
 	LDA Player_InWater
-	ORA Player_IsHolding
-	ORA Player_Kuribo
+	;j
+	;can climb vines while holding item or in boot
+	;ORA Player_IsHolding
+	;ORA Player_Kuribo
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
+	NOP
 	BNE PRG008_A890	 ; If Player is in water, holding something, or in Kuribo's shoe, jump to PRG008_A890
 
 	LDA <Temp_Var1
