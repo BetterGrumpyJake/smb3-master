@@ -143,9 +143,10 @@ Player_VibeDisableFrame:
 	.byte PF_WALKSPECIAL_BASE+2	; Tanooki
 	.byte PF_WALKBIG_BASE+2		; Hammer
 
+	;remove unused code
 	; Unused data?
-	.byte $FE, $02, $05, $FB, $01
-	.byte $02, $03, $00
+	;.byte $FE, $02, $05, $FB, $01
+	;.byte $02, $03, $00
 
 	; When Player hits water, splash!
 Player_WaterSplash:
@@ -342,7 +343,9 @@ PRG008_A17F:
 	SUB #$90
 	STA Counter_Wiggly
 
-	JSR Player_Update	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
+	;JSR Player_Update
+	;j
+	JSR SpawnShell_PlayerUpdate_30	 ; WHERE THE PLAYER DOES EVERYTHING!! (Except touch other objects)
 
 	; If Player is...
 	LDA <Player_IsDying	; ... dying ....
@@ -532,9 +535,10 @@ PRG008_A27A:
 	STY <Player_YHi
 	STA <Player_Y
 
+	;remove unused code
 	; Level_UnusedFlag = 1 (unused; only set, never read!)
-	LDA #$01
-	STA Level_UnusedFlag
+	;LDA #$01
+	;STA Level_UnusedFlag
 
 	RTS		 ; Return
 
@@ -671,9 +675,10 @@ LevelInit_EnableSlopes:
 
 	; Level_Tileset = 5...
 
-	LDA Level_UnusedSlopesTS5	; Never set, so this is unused...
-	CMP #$02
-	BEQ PRG008_A347	 ; If Level_UnusedSlopesTS5 = 2, jump to PRG008_A347 (force slopes to be enabled on tileset 5)
+	;remove unused code
+	;LDA Level_UnusedSlopesTS5	; Never set, so this is unused...
+	;CMP #$02
+	;BEQ PRG008_A347	 ; If Level_UnusedSlopesTS5 = 2, jump to PRG008_A347 (force slopes to be enabled on tileset 5)
 
 PRG008_A345:
 	LDY #$00	 ; Y = 0 (do not enable slopes)
@@ -1311,12 +1316,13 @@ Player_ControlJmp:
 ; $A6AD
 	.byte $35, $35, $03
 
+	;remove unused code
 ; FIXME: Anybody want to claim this?
 ; $A6B0 
-	ORA <Temp_Var4
-	JSR Player_ApplyXVelocity
-	JSR Player_ApplyYVelocity
-	JMP Player_Draw29
+	;ORA <Temp_Var4
+	;JSR Player_ApplyXVelocity
+	;JSR Player_ApplyYVelocity
+	;JMP Player_Draw29
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_Control
@@ -1720,6 +1726,10 @@ PRG008_A86C:
 
 	LDA Player_IsClimbing
 	BNE PRG008_A898	 ; If climbing flag is set, jump to PRG008_A898
+	
+	;don't allow climbing while jumping, until you start falling
+	LDA <Player_YVel
+	BMI PRG008_A890
 
 	LDA <Pad_Holding
 	AND #(PAD_UP | PAD_DOWN)
@@ -1738,6 +1748,21 @@ PRG008_A890:
 	JMP PRG008_A8F9	 ; Jump to PRG008_A8F9
 
 PRG008_A898:
+	;check if a is pressed otherwise keep climbing
+	LDA <Pad_Input
+	AND #PAD_A
+	BEQ VineJumpSkip
+
+	;jump off vine
+	;clear climbing flag
+	LDA #$00
+	STA Player_IsClimbing
+	;set yvel to a jump and stop climbing
+	LDA #PLAYER_JUMP
+	STA <Player_YVel
+	JMP PRG008_A8EC
+
+VineJumpSkip:
 	LDA #$01
 	STA Player_IsClimbing	 ; Player_IsClimbing = 1 (Player is climbing)
 
@@ -2344,7 +2369,7 @@ PRG008_AB5B:
 	JMP PRG008_AB83	 ; Jump to PRG008_AB83
 
 PRG008_AB62:
-	LDY #Pad_Input
+	LDY #PLAYER_TOPWALKSPEED
 
 	BIT <Pad_Holding
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
@@ -2386,8 +2411,11 @@ PRG008_AB83:
 	ASL A
 	ASL A
 	ASL A
-	ADD #$40
-	TAY		 ; Y = ((selected top speed - 1) << 3) + $40 ??
+	ADD #$40	
+	; Y = 40 if slippery
+	; Y = 46 if very slippery
+	; Y = ((Player_Slippery - 1) << 3) + $40
+	TAY
 	BNE PRG008_AB9E	 ; And as long as that's not zero, jump to PRG008_AB9E
 
 PRG008_AB98:
