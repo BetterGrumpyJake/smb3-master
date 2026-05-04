@@ -1983,6 +1983,31 @@ MarioFallingV:
 	;if up/down weren't pressed RTS
 	LDY ThrowDirection
 	BEQ _post_skyv		; (RTS)
+	
+	;add code so dropped and thrown up shells don't get stuck in walls, instead they pop out of the wall and continue operation
+	;%00000001  (= $01)  hit right wall
+	;%00000010  (= $02)  hit left wall
+	LDA <Objects_DetStat,X
+    AND #$03
+    BEQ NotInWall
+	;shift bits one to the right, carry set=right wall, carry clear=left wall
+	;after  lsr:  %00000000    carry = 1    (hit right wall)
+	;after  lsr:  %00000001    carry = 0    (hit left wall)
+    LSR A
+    LDA <Objects_X,X
+    BCC ShellPopRight
+	;subtract 8 pixels, pop left
+    SUB #$08
+    BNE ShellPop
+	
+ShellPopRight:
+	;add 8 pixels, pop right
+    ADD #$08
+	
+ShellPop:
+    STA <Objects_X,X
+	
+NotInWall:
 	LDA #$00
 	STA ThrowDirection	; Zero this back out
 
