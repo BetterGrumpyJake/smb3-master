@@ -2056,6 +2056,10 @@ AirborneShellKillAndMove:
 	BNE AirborneShellNoKill
 	JSR ObjectToObject_HitTest
 	BCC AirborneShellNoKill
+	;play kill sound
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERKICK
+	STA Sound_QPlayer
 	;kill enemies
 	TYA
 	TAX
