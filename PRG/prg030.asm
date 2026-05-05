@@ -2032,14 +2032,13 @@ _skyv_xvel_ror2:
 	JMP _skyv_set_yvel
 
 _set_shell_down:
-	;; Override XVel if setting down
-	LDA #$00
-	LDY <Player_FlipBits
-	BEQ _skyv_shell_down_xvel
-	NEG
-_skyv_shell_down_xvel:
-	ADD <Player_XVel
-	STA <Objects_XVel,X
+    CLC
+    LDA <Player_XVel
+    BPL _down_ror1
+    SEC
+_down_ror1:
+    ROR A
+    STA <Objects_XVel,X
 
 _skyv_set_yvel:
 	PLA					; Restore shell throw direction
