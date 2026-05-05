@@ -1969,7 +1969,7 @@ SetKickedYVel:
 	;%00000010  (= $02)  hit left wall
 	LDA <Objects_DetStat,X
     AND #$03
-    BEQ MarioFallingV
+    BEQ NotInWall
 	;shift bits one to the right, carry set=right wall, carry clear=left wall
 	;after  lsr:  %00000000    carry = 1    (hit right wall)
 	;after  lsr:  %00000001    carry = 0    (hit left wall)
@@ -1986,7 +1986,8 @@ ShellPopRight:
 	
 ShellPop:
     STA <Objects_X,X
-	
+
+NotInWall:	
 	;get marios y velocity
 	LDA <Player_YVel
 	;if mario is rising use 0 for shells velocity
