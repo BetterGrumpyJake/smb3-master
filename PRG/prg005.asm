@@ -3665,15 +3665,16 @@ ObjNorm_TwirlingPlatCWNS:
 	; else, but if you wanted to actually know what it does, you're out of luck today...
 
 	; Var5 = $30
-	LDA #$30
-	STA <Objects_Var5,X
+	;LDA #$30
+	;STA <Objects_Var5,X
+	LDA Objects_Var7,X
+	BNE ObjNorm_TwirlingPlatCW
 
 PRG005_B1D5:
 	JSR Platform_SplitVar5
-	JSR PRG005_B40A	
+	JSR PRG005_B40A
 	JSR PRG005_SUB_B4BB
-
-	JMP PRG005_B270	 ; Jump to PRG005_B270
+	JMP PRG005_B270
 
 PRG005_B1E1:	.byte $20, $50, $20, $50
 PRG005_B1E5:	.byte $F8, $08, $08, $F8
@@ -3704,15 +3705,26 @@ ObjNorm_TwirlingPlatCW:
 	INC <Objects_Var4,X
 
 PRG005_B209:
-	AND #$00		; ... interesting ...
-	BNE PRG005_B21A		; This jump will never be taken..
-
 	LDA <Objects_Var5,X
 	CMP PRG005_B1E9,Y
-	BEQ PRG005_B21A	 
+	BEQ PlatformStopCheck
 
 	ADD PRG005_B1E5,Y
 	STA <Objects_Var5,X
+
+PlatformStopCheck:
+	BNE PRG005_B21A
+	
+	LDY Objects_Var7,X
+	BEQ PRG005_B21A
+	
+	LDY <Objects_Var4,X
+	CPY #$02
+	BCC PRG005_B21A
+	
+	STA Objects_Var7,X
+	STA <Objects_Var4,X
+	STA Objects_Timer,X
 
 PRG005_B21A:
 	RTS		 ; Return
@@ -3834,6 +3846,11 @@ PRG005_B2C6:
 	LDA <Temp_Var15
 	BEQ PRG005_B33E
 
+	CMP #$01
+	BNE PlatformTouched
+	STA Objects_Var7,X
+	
+PlatformTouched:
 	LDA <Objects_Var5,X
 	BNE PRG005_B303
 
